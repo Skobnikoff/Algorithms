@@ -1,4 +1,4 @@
-# First version: 14.03.2016
+# Start: 14.03.2016
 # Last version: 21.03.2016
 """
     Python implementation of the Apriori algorithm
