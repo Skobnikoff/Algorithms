@@ -1,17 +1,23 @@
 
 
-
-def get_entropy(data_set):
+def get_entropy(target):
     """
     Calculate and return the entropy of the given data set.
-    Entropy measures how informative or rich in diversity is a data set.
-    Higher is entropy, more heterogeneous the data set is and vice versa.
+    Entropy measures how informative or rich in diversity the data set is.
+    Higher is the entropy, more heterogeneous the data set is and vice versa.
 
-    :param data_set:
+    :param target: pandas.Series. Contains the classification target we aim to predict.
     :return: int entropy (>=0).
     """
-    # TODO
-    return
+    import math
+
+    entropy = 0
+    for klass in set(target):
+        subset = target[target == klass]
+        klass_weight = len(subset) / len(target)
+        entropy += klass_weight * math.log2(1 / klass_weight)
+
+    return round(entropy, 6)
 
 def get_information_gain(data_set, attribute):
     """
