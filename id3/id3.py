@@ -111,5 +111,6 @@ def run_id3_algorithm(
         else:
             node.branches[value] = run_id3_algorithm(data_set=data_set[data_set[node.attr] == value],
                                                      unused_attributes=unused_attributes - {node.attr},
-                                                     target_col='class')
+                                                     unique_attr_values=unique_attr_values,
+                                                     target_col=target_col)
     return node
