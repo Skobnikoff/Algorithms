@@ -1,4 +1,4 @@
-
+import pandas
 
 def get_entropy(target):
     """
@@ -83,3 +83,33 @@ class Node:
         if self.klass is not None:
             return "{{Class: {}}}\n".format(self.klass)
         return ("{{Attribute: '{}', Branches: {}}}\n".format(self.attr, self.branches))
+
+
+def run_id3_algorithm(
+        data_set: pandas.DataFrame,
+        unused_attributes: set,
+        unique_attr_values: dict,
+        target_col: str = 'class'):
+
+    unique_classes = data_set[target_col].unique()
+    if len(unique_classes) == 1:
+        Node(klass=unique_classes[0])
+
+    major_class = data_set[target_col].mode()[0]
+
+    if len(unused_attributes) == 0:
+        return Node(klass=major_class)
+
+    node = Node()
+    node.attr = get_best_split(data_set, unused_attributes)
+    node.branches = {}
+
+    for value in unique_attr_values[node.attr]:
+        print(value)
+        if value not in data_set[node.attr].values:
+            node.branches[value] = Node(klass=major_class)
+        else:
+            node.branches[value] = run_id3_algorithm(data_set=data_set[data_set[node.attr] == value],
+                                                     unused_attributes=unused_attributes - {node.attr},
+                                                     target_col='class')
+    return node
