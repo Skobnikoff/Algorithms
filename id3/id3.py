@@ -1,4 +1,6 @@
 import pandas
+import sys
+
 
 def get_entropy(target):
     """
@@ -114,3 +116,15 @@ def run_id3_algorithm(
                                                      unique_attr_values=unique_attr_values,
                                                      target_col=target_col)
     return node
+
+
+if __name__ == '__main__':
+
+    data_file_path = sys.argv[1]
+
+    data_df = pandas.read_csv(data_file_path, sep=',')
+    unique_attr_values = {attr: data_df[attr].unique() for attr in data_df.columns if attr != 'class'}
+    tree = run_id3_algorithm(data_set=data_df,
+                             unused_attributes=set(unique_attr_values.keys()),
+                             unique_attr_values=unique_attr_values,
+                             target_col='class')
