@@ -65,3 +65,21 @@ def get_best_split(data_set, unused_attributes, target_col='class'):
     print("> selected_attr:", selected_attr)
 
     return selected_attr
+
+
+class Node:
+
+    def __init__(self, attr=None, branches=None, klass=None):
+        self.attr = attr
+        self.branches = branches
+        self.klass = klass
+
+    def __str__(self):
+        if self.klass is not None:
+            return "{{Class: {}}}\n".format(self.klass)
+        return ("{{Attribute: '{}', Branches: {}}}\n".format(self.attr, self.branches))
+
+    def __repr__(self):
+        if self.klass is not None:
+            return "{{Class: {}}}\n".format(self.klass)
+        return ("{{Attribute: '{}', Branches: {}}}\n".format(self.attr, self.branches))
