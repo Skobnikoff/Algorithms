@@ -95,7 +95,7 @@ def run_id3_algorithm(
 
     unique_classes = data_set[target_col].unique()
     if len(unique_classes) == 1:
-        Node(klass=unique_classes[0])
+        return Node(klass=unique_classes[0])
 
     major_class = data_set[target_col].mode()[0]
 
