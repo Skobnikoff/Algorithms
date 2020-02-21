@@ -63,9 +63,10 @@ def get_best_split(data_set, unused_attributes, target_col='class'):
 
 class Node:
 
-    def __init__(self, attr=None, branches=None, klass=None):
+    def __init__(self, attr=None, branches=None, major_class=None, klass=None):
         self.attr = attr
         self.branches = branches
+        self.major_class = major_class
         self.klass = klass
 
     def to_dict(self):
@@ -73,6 +74,16 @@ class Node:
             return self.klass
         else:
             return {self.attr: {attr: node.to_dict() for attr, node in self.branches.items()}}
+
+    def predict(self, datapoint: dict):
+        if self.klass is not None:
+            return self.klass
+        else:
+            if self.attr in datapoint.keys():
+                branch = datapoint[self.attr]
+                return self.branches[branch].predict(datapoint)
+            else:
+                return self.major_class
 
     def __str__(self):
         return json.dumps(self.to_dict(), indent=4, sort_keys=True)
@@ -96,9 +107,11 @@ def run_id3_algorithm(
     if len(unused_attributes) == 0:
         return Node(klass=major_class)
 
-    node = Node()
-    node.attr = get_best_split(data_set, unused_attributes)
-    node.branches = {}
+    node = Node(
+        attr=get_best_split(data_set, unused_attributes),
+        branches={},
+        major_class=major_class
+    )
 
     for value in unique_attr_values[node.attr]:
         if value not in data_set[node.attr].values:
