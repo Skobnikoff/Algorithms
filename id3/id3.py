@@ -1,3 +1,4 @@
+import json
 import pandas
 import sys
 
@@ -67,15 +68,17 @@ class Node:
         self.branches = branches
         self.klass = klass
 
-    def __str__(self):
+    def to_dict(self):
         if self.klass is not None:
-            return "{{Class: {}}}\n".format(self.klass)
-        return ("{{Attribute: '{}', Branches: {}}}\n".format(self.attr, self.branches))
+            return self.klass
+        else:
+            return {self.attr: {attr: node.to_dict() for attr, node in self.branches.items()}}
+
+    def __str__(self):
+        return json.dumps(self.to_dict(), indent=4, sort_keys=True)
 
     def __repr__(self):
-        if self.klass is not None:
-            return "{{Class: {}}}\n".format(self.klass)
-        return ("{{Attribute: '{}', Branches: {}}}\n".format(self.attr, self.branches))
+        return "Node()\n{}".format(self.to_dict())
 
 
 def run_id3_algorithm(
@@ -118,3 +121,5 @@ if __name__ == '__main__':
                              unused_attributes=set(unique_attr_values.keys()),
                              unique_attr_values=unique_attr_values,
                              target_col='class')
+
+    print(tree)
